@@ -13,7 +13,7 @@ This tutorial uses biallelic SNP genotypes from a population genetics study on E
 ### Example plots
 Minor allele frequencies for nine SNP loci. Each bar represents a sampling site and the colours denote the region of origin. <br />
 
-<img src="./Images/minor_allele_freq.png" width="500" height="400" > <br />
+<img src="./Images/allele_freq.png" width="500" height="400" > <br />
 
 Maps of present-day sea temperature and salinity in the northeast Atlantic and the Mediterranean. <br />
 
