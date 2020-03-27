@@ -57,6 +57,22 @@ summary(data_filt$pop) # sample size
 
 #--------------#
 #
+# Calculate allele frequencies
+#
+#--------------#
+
+# Calculate allele frequencies for each site
+allele_freqs = data.frame(rraf(data_filt, by_pop=TRUE, correction = FALSE), check.names = FALSE)
+
+# Keep only the first of the two alleles for each SNP (since p=1-q).
+allele_freqs = allele_freqs[, seq(1, dim(allele_freqs)[2], 2)]
+
+# Export allele frequencies
+write.csv(allele_freqs, file = "allele_freqs.csv", row.names = TRUE)
+
+
+#--------------#
+#
 # Calculate minor allele frequencies
 #
 #--------------#
@@ -73,7 +89,7 @@ maf = as.data.frame(maf_list) %>% t() %>% as.data.frame()
 head(maf)
 
 # Export minor allele frequencies
-write.csv(maf, file = "minor_allele_freqs.csv", row.names = TRUE)
+# write.csv(maf, file = "minor_allele_freqs.csv", row.names = TRUE)
 
 
 # ----------------- #
@@ -83,7 +99,7 @@ write.csv(maf, file = "minor_allele_freqs.csv", row.names = TRUE)
 # ----------------- #
 
 # Add site labels
-maf$site = rownames(maf)
+allele_freqs$site = rownames(allele_freqs)
 
 # Function to add regional labels to dataframe
 addregion = function(x){
@@ -97,32 +113,38 @@ addregion = function(x){
 }
 
 # Add regional labels
-maf$region = sapply(rownames(maf), addregion)
+allele_freqs$region = sapply(rownames(allele_freqs), addregion)
 
 # Convert dataframe to long format
-maf.long = melt(maf, id.vars=c("site","region"))
+allele_freqs.long = melt(allele_freqs, id.vars=c("site","region"))
 
 # Define order of facets using the levels argument in factor
-unique(maf.long$site)
+unique(allele_freqs.long$site)
 site_order =  c("Tro","Ber","Flo","Gul","Kav","Lys","Sin","Hel","Oos",
                 "Cro","Brd","Eye",
                 "She","Ork","Heb","Sul","Cor","Hoo","Iom","Ios","Jer","Kil",
                 "Loo","Lyn","Mul","Pad","Pem","Sbs","Ven",
                 "Idr","Vig",
                 "Sar","Laz","Ale","Sky","The","Tor")
-maf.long$site_ord = factor(maf.long$site, levels = site_order)
+allele_freqs.long$site_ord = factor(allele_freqs.long$site, levels = site_order)
 
 # Define region order
 region_order = c(" Scandinavia "," Atlantic "," Central Mediterranean ", " Aegean Sea ")
-maf.long$region = factor(maf.long$region, levels = region_order)
+allele_freqs.long$region = factor(allele_freqs.long$region, levels = region_order)
 
 # Create colour scheme
 # blue=#377EB8, green=#7FC97F, orange=#FDB462, red=#E31A1C
 col_scheme = c("#7FC97F","#377EB8","#FDB462","#E31A1C")
 
-# Subset dataset to plot desired SNP loci
+# Extract list of loci names from dataframe
 desired_loci = c("7502","25608","31462","35584","42395","53314","58053","65064","65576")
-maf.sub = maf.long %>% filter(variable %in% desired_loci)
+desired_loci_ID = sapply(paste(desired_loci, "..", sep = ""),
+                         grep,
+                         levels(allele_freqs.long$variable),
+                         value = TRUE) %>% as.vector()
+
+# Subset dataset to plot desired SNP loci
+allele_freqs.sub = allele_freqs.long %>% filter(variable %in% desired_loci_ID)
 
 # ggplot2 theme
 ggtheme = theme(
@@ -143,13 +165,13 @@ ggtheme = theme(
 )
 
 # Plot barplot
-ggplot(data = maf.sub, aes(x = site_ord, y = value, fill = region))+
+ggplot(data = allele_freqs.sub, aes(x = site_ord, y = value, fill = region))+
   geom_bar(stat = "identity", colour = "black", size = 0.3)+
   facet_wrap(~variable, scales = "free")+
   scale_y_continuous(limits = c(0,1), expand = c(0,0))+
   scale_fill_manual(values = col_scheme)+
-  ylab("Minor allele frequency")+
+  ylab("Allele frequency")+
   xlab("Site")+
   ggtheme
-ggsave("minor_allele_freq.png", width=10, height=8, dpi=300)
-ggsave("minor_allele_freq.pdf", width=10, height=8)
+ggsave("allele_freq.png", width=10, height=8, dpi=300)
+ggsave("allele_freq.pdf", width=10, height=8)

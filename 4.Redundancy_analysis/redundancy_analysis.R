@@ -25,13 +25,16 @@ library(adespatial)
 library(vegan)
 
 # Import genetic data
-maf = read.csv("../1.Prepare_genetic_data/minor_allele_freqs.csv", row.names = 1, check.names = FALSE)
+allele_freqs = read.csv("../1.Prepare_genetic_data/allele_freqs.csv", row.names = 1, check.names = FALSE)
 
 # Import environmental data
 env.raw = read.csv("../2.Prepare_environmental_data/environmental_data.csv", row.names = 1)
 
 # Import spatial data
 dbmem.raw = read.csv("../3.Prepare_spatial_data/dbmems.csv")
+
+# Set seed
+set.seed(123)
 
 
 #--------------#
@@ -55,11 +58,11 @@ pairs.panels(env.data, scale = TRUE)
 #--------------#
 
 # Use forward selection to identify significant environmental variables
-env.for = forward.sel(Y = maf, X = env.data, alpha = 0.01)
+env.for = forward.sel(Y = allele_freqs, X = env.data, alpha = 0.01)
 env.for
 
 # Use forward selection to identify significant dbmems
-dbmem.for = forward.sel(Y = maf, X = dbmem.raw, alpha = 0.01)
+dbmem.for = forward.sel(Y = allele_freqs, X = dbmem.raw, alpha = 0.01)
 dbmem.for
 
 # Subset only significant independent variables to include in the RDA
@@ -80,7 +83,7 @@ str(env.dbmems)
 #--------------#
 
 # Perform RDA with all variables
-rda1 = rda(maf ~ ., data = env.dbmems, scale = TRUE)
+rda1 = rda(allele_freqs ~ ., data = env.dbmems, scale = TRUE)
 rda1
 
 # Model summaries
@@ -94,7 +97,7 @@ summary(eigenvals(rda1, model = "constrained"))
 screeplot(rda1)
 
 # Create a dataframe to correctly colour regions
-col_dframe = data.frame("site" = rownames(maf))
+col_dframe = data.frame("site" = rownames(allele_freqs))
 
 # Function to add regional labels to dataframe
 addregion = function(x){
@@ -146,7 +149,7 @@ dev.off()
 #--------------#
 
 # Perform RDA while controlling for geographical location
-pRDA = rda(maf ~ sbt_mean + sss_mean + ssca_mean + Condition(MEM1+MEM2+MEM3+MEM5+MEM6),
+pRDA = rda(allele_freqs ~ sbt_mean + sss_mean + ssca_mean + Condition(MEM1+MEM2+MEM3+MEM5),
            data = env.dbmems, scale = TRUE)
 pRDA
 RsquareAdj(pRDA) # adjusted Rsquared 
@@ -167,7 +170,7 @@ text(pRDA, display="bp", scaling=3, col="red1", cex=1, lwd=2)
 # SNPS
 # text(pRDA, display="species", scaling = 3, col="blue", cex=0.7, pos=4) # SNPs
 # LEGEND
-legend("topleft", legend=levels(col_dframe$region), bty="n", col="black",
+legend("bottomleft", legend=levels(col_dframe$region), bty="n", col="black",
        pch=21, cex=1.2, pt.bg=cols)
 # OTHER LABELS
 adj.R2 = round(RsquareAdj(pRDA)$adj.r.squared, 3)
