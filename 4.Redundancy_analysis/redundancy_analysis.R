@@ -138,7 +138,7 @@ legend("topleft", legend=levels(col_dframe$region), bty="n", col="black",
        pch=21, cex=1.2, pt.bg=cols)
 # OTHER LABELS
 adj.R2 = round(RsquareAdj(rda1)$adj.r.squared, 3)
-mtext(bquote("r"^"2"~"= "~.(adj.R2)), side = 3, adj = 0.5)
+mtext(bquote(italic("R")^"2"~"= "~.(adj.R2)), side = 3, adj = 0.5)
 dev.off()
 
 
@@ -174,7 +174,7 @@ legend("bottomleft", legend=levels(col_dframe$region), bty="n", col="black",
        pch=21, cex=1.2, pt.bg=cols)
 # OTHER LABELS
 adj.R2 = round(RsquareAdj(pRDA)$adj.r.squared, 3)
-mtext(bquote("r"^"2"~"= "~.(adj.R2)), side = 3, adj = 0.5)
+mtext(bquote(italic("R")^"2"~"= "~.(adj.R2)), side = 3, adj = 0.5)
 dev.off()
 
 
