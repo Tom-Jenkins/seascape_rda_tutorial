@@ -136,7 +136,7 @@ allele_freqs.long$region = factor(allele_freqs.long$region, levels = region_orde
 # blue=#377EB8, green=#7FC97F, orange=#FDB462, red=#E31A1C
 col_scheme = c("#7FC97F","#377EB8","#FDB462","#E31A1C")
 
-# Extract list of loci names from dataframe
+# Vector of SNP loci to subset
 desired_loci = c("7502","25608","31462","35584","42395","53314","58053","65064","65576")
 desired_loci_ID = sapply(paste(desired_loci, "..", sep = ""),
                          grep,
