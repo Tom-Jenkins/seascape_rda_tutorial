@@ -27,8 +27,12 @@
 # Load packages
 library(raster)
 library(dplyr)
-library(rworldmap)
-library(rworldxtra)
+# devtools::install_github("ropenscilabs/rnaturalearth")
+# devtools::install_github("ropenscilabs/rnaturalearthdata")
+# devtools::install_github("ropenscilabs/rnaturalearthhires")
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(rnaturalearthhires)
 library(ggplot2)
 library(RColorBrewer)
 library(ggpubr)
@@ -89,7 +93,7 @@ ssc.df = crop(ssc.present, y = boundary) %>% rasterToPoints() %>% data.frame()
 ssca.df = crop(ssca.present, y = boundary) %>% rasterToPoints() %>% data.frame()
 
 # Download a basemap
-basemap = getMap(resolution = "high")
+basemap = ne_countries(scale = "large")
 
 # Crop to boundary and convert to dataframe
 basemap = crop(basemap, y = boundary) %>% fortify()
