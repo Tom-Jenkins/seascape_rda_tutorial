@@ -154,7 +154,7 @@ ggsave("3.sss_heatmap.png", width = 10, height = 9, dpi = 600)
 
 # Sea bottom salinity
 sbs.plt = ggplot()+
-  geom_tile(data = sbt.df, aes(x = x, y = y, fill = sbs.df[, 3]))+
+  geom_tile(data = sbs.df, aes(x = x, y = y, fill = sbs.df[, 3]))+
   geom_polygon(data = basemap, aes(x = long, y = lat, group = group))+
   coord_quickmap(expand = F)+
   xlab("Longitude")+
