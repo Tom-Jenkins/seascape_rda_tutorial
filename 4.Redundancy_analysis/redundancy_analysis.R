@@ -19,19 +19,19 @@
 # --------------------------- #
 
 # Load packages
+library(tidyverse)
 library(psych)
-library(dplyr)
 library(adespatial)
 library(vegan)
 
 # Import genetic data
 allele_freqs = read.csv("../1.Prepare_genetic_data/allele_freqs.csv", row.names = 1, check.names = FALSE)
 
-# Import environmental data
-env.raw = read.csv("../2.Prepare_environmental_data/environmental_data.csv", row.names = 1)
-
 # Import spatial data
-dbmem.raw = read.csv("../3.Prepare_spatial_data/dbmems.csv")
+dbmem.raw = read.csv("../2.Prepare_spatial_data/dbmems.csv")
+
+# Import environmental data
+env.raw = read.csv("../3.Prepare_environmental_data/environmental_data.csv", row.names = 1)
 
 # Set seed
 set.seed(123)
@@ -170,7 +170,7 @@ text(pRDA, display="bp", scaling=3, col="red1", cex=1, lwd=2)
 # SNPS
 # text(pRDA, display="species", scaling = 3, col="blue", cex=0.7, pos=4) # SNPs
 # LEGEND
-legend("bottomleft", legend=levels(col_dframe$region), bty="n", col="black",
+legend("topleft", legend=levels(col_dframe$region), bty="n", col="black",
        pch=21, cex=1.2, pt.bg=cols)
 # OTHER LABELS
 adj.R2 = round(RsquareAdj(pRDA)$adj.r.squared, 3)

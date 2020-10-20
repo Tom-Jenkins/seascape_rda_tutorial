@@ -23,9 +23,7 @@
 # Load packages
 library(adegenet)
 library(poppr)
-library(dplyr)
-library(reshape2)
-library(ggplot2)
+library(tidyverse)
 
 # Import genotypes
 load("lobster_1278ind_79snps_40pop.RData")
@@ -116,7 +114,9 @@ addregion = function(x){
 allele_freqs$region = sapply(rownames(allele_freqs), addregion)
 
 # Convert dataframe to long format
-allele_freqs.long = melt(allele_freqs, id.vars=c("site","region"))
+allele_freqs.long = allele_freqs %>%
+  pivot_longer(cols = 1:79, names_to = "allele", values_to = "frequency")
+allele_freqs.long
 
 # Define order of facets using the levels argument in factor
 unique(allele_freqs.long$site)
@@ -140,11 +140,11 @@ col_scheme = c("#7FC97F","#377EB8","#FDB462","#E31A1C")
 desired_loci = c("7502","25608","31462","35584","42395","53314","58053","65064","65576")
 desired_loci_ID = sapply(paste(desired_loci, "..", sep = ""),
                          grep,
-                         levels(allele_freqs.long$variable),
+                         unique(allele_freqs.long$allele),
                          value = TRUE) %>% as.vector()
 
 # Subset dataset to plot desired SNP loci
-allele_freqs.sub = allele_freqs.long %>% filter(variable %in% desired_loci_ID)
+allele_freqs.sub = allele_freqs.long %>% filter(allele %in% desired_loci_ID)
 
 # ggplot2 theme
 ggtheme = theme(
@@ -165,13 +165,13 @@ ggtheme = theme(
 )
 
 # Plot barplot
-ggplot(data = allele_freqs.sub, aes(x = site_ord, y = value, fill = region))+
+ggplot(data = allele_freqs.sub, aes(x = site_ord, y = frequency, fill = region))+
   geom_bar(stat = "identity", colour = "black", size = 0.3)+
-  facet_wrap(~variable, scales = "free")+
+  facet_wrap(~allele, scales = "free")+
   scale_y_continuous(limits = c(0,1), expand = c(0,0))+
   scale_fill_manual(values = col_scheme)+
   ylab("Allele frequency")+
   xlab("Site")+
   ggtheme
-ggsave("allele_freq.png", width=10, height=8, dpi=300)
-ggsave("allele_freq.pdf", width=10, height=8)
+# ggsave("allele_freq.png", width=10, height=8, dpi=600)
+# ggsave("allele_freq.pdf", width=10, height=8)
