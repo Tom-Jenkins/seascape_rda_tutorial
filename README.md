@@ -3,8 +3,8 @@ The scripts in this repository cover how to conduct a redundancy analysis (RDA) 
 
 The tutorial has been put together such that you can clone this repository and run the scripts on your own computer.  There are currently four folders of R scripts and data files that cover the following steps:
 1. Prepare genetic data
-2. Prepare environmental data
-3. Prepare spatial data
+2. Prepare spatial data
+3. Prepare environmental data
 4. Perform redundancy analysis
 
 ### Disclaimer
