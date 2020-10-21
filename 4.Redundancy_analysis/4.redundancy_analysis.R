@@ -134,7 +134,7 @@ text(rda1, display="bp", scaling=3, col="red1", cex=1, lwd=2)
 # SNPS
 # text(rda1, display="species", scaling = 3, col="blue", cex=0.7, pos=4) # SNPs
 # LEGEND
-legend("topleft", legend=levels(col_dframe$region), bty="n", col="black",
+legend("bottomleft", legend=levels(col_dframe$region), bty="n", col="black",
        pch=21, cex=1.2, pt.bg=cols)
 # OTHER LABELS
 adj.R2 = round(RsquareAdj(rda1)$adj.r.squared, 3)
@@ -209,7 +209,7 @@ snp.load.df$SNP_ID = rownames(snp.load.df)
 str(snp.load.df)
 
 # Extract locus ID
-snp.load.df %>% filter(RDA1 == candidates)
+snp.load.df %>% dplyr::filter(RDA1 %in% candidates)
 
 # Further info on this analysis in this tutorial:
 # https://popgen.nescent.org/2018-03-27_RDA_GEA.html

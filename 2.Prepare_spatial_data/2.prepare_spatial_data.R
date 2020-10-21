@@ -23,7 +23,6 @@ library(tidyverse)
 library(ade4)
 library(adespatial)
 library(SoDA)
-library(psych)
 
 
 #--------------#
@@ -45,18 +44,21 @@ head(coords)
 coords.gps = dplyr::select(coords, Lon, Lat)
 
 # Get depth of coordinates
-depths = get.depth(bathydata, x = coords$Lon, y = coords$Lat, locator = FALSE)
+depths = cbind(site = coords$Site, get.depth(bathydata, coords.gps, locator = FALSE))
 depths
 
-# Check all coordinates are below 1 metre depth
-depths$depth <= -1
+# Check all coordinates are below 10 metre depth
+depths$depth <= -10
 
 # Plot bathymetry data and coordinates
 plot(bathydata)
-points(coords$Lon, coords$Lat, pch = 21, bg = "yellow", col = "black")
+points(coords$Lon, coords$Lat, pch = 21, bg = "yellow", col = "black", cex = 2)
 
 # Create transition object [long run time]
-# trans1 = trans.mat(bathydata, min.depth = -1, max.depth = NULL)
+# Author of marmap recommendations:
+# Use a minimum depth of -10 to avoid path crossing land masses
+# Use a maximum depth of -200 to limit paths to continental shelf
+# trans1 = trans.mat(bathydata, min.depth = -10, max.depth = NULL)
 # save(trans1, file = "transition_object.RData")
 # load("transition_object.RData")
 
